@@ -159,6 +159,12 @@ func printBits(order binary.ByteOrder, name, valStr string, opts *options) {
 	var leadingZero = true // assume the most significant bit is a leading zero
 	var value uint
 
+	maxBit := opts.high
+	if opts.all {
+		maxBit = opts.intSize*8 - 1
+	}
+	width := len(strconv.Itoa(maxBit))
+
 	for pos := opts.intSize - 1; pos >= 0; pos-- { // iterate over bytes, MSB first
 		b := byteAt(order, bytes, pos)
 		for bit := 7; bit >= 0; bit-- { // iterate over bits in each byte
@@ -184,7 +190,7 @@ func printBits(order binary.ByteOrder, name, valStr string, opts *options) {
 			if opts.value {
 				value |= bitVal << bitPos
 			} else {
-				fmt.Printf("bit[%2d]: %d\n", bitPos, bitVal)
+				fmt.Printf("bit[%*d]: %d\n", width, bitPos, bitVal)
 			}
 		}
 	}
